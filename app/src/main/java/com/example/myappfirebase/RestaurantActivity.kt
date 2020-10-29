@@ -2,8 +2,11 @@ package com.example.myappfirebase
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
+import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_restaurant.*
+import org.w3c.dom.Comment
 
 class RestaurantActivity : AppCompatActivity() {
 
@@ -19,7 +22,21 @@ class RestaurantActivity : AppCompatActivity() {
 
 
         saveCommentButton.setOnClickListener{
-            //create new coment and save to firebase
+            //create new comment and save to firebase
+            if ((!TextUtils.isEmpty(usernameEditText.text)) && (!TextUtils.isEmpty(bodyEditText.text))) {
+//                get new id from firebase
+                val id = db.document().id
+                val comment = Comment(id, usernameEditText.text.toString(), bodyEditText.text.toString(), intent.getStringExtra("restaurantId").toString())
+                db.document(id).set(comment)
+
+                //clear values
+                usernameEditText.setText("")
+                bodyEditText.setText("")
+                Toast.makeText(this, "Comment added", Toast.LENGTH_LONG).show()
+            }
+            else {
+                Toast.makeText(this, "Incomplete", Toast.LENGTH_LONG).show()
+            }
         }
     }
 }
